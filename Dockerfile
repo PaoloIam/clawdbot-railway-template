@@ -21,10 +21,14 @@ RUN corepack enable
 WORKDIR /openclaw
 
 # Pin to a known-good ref (tag/branch). Override in Railway template settings if needed.
-# Using a released tag avoids build breakage when `main` temporarily references unpublished packages.
-# Cache bust: 2026-03-16
-ARG OPENCLAW_GIT_REF=v2026.3.13
-RUN git clone --depth 1 --branch "${OPENCLAW_GIT_REF}" https://github.com/openclaw/openclaw.git .
+# Using a released tag avoids build breakage when main temporarily references unpublished packages.
+ARG OPENCLAW_GIT_REF=v2026.3.13-1
+ARG CACHE_BUST=2026-03-16.1
+RUN echo "ref=${OPENCLAW_GIT_REF} cache=${CACHE_BUST}" \
+ && git clone https://github.com/openclaw/openclaw.git . \
+ && git checkout --detach "${OPENCLAW_GIT_REF}" \
+ && test "$(git describe --tags --exact-match)" = "${OPENCLAW_GIT_REF}" \
+ && git rev-parse HEAD
 
 # Patch: relax version requirements for packages that may reference unpublished versions.
 # Apply to all extension package.json files to handle workspace protocol (workspace:*).
