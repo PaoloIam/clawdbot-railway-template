@@ -416,6 +416,9 @@ app.get("/setup", requireSetupAuth, (_req, res) => {
         <option value="openclaw.doctor">openclaw doctor</option>
         <option value="openclaw.logs.tail">openclaw logs --tail N</option>
         <option value="openclaw.config.get">openclaw config get &lt;path&gt;</option>
+        <option value="openclaw.models.status">openclaw models status (auth per provider)</option>
+        <option value="openclaw.models.auth.claude-cli">openclaw models auth login (Claude CLI / subscription)</option>
+        <option value="openclaw.doctor.fix">openclaw doctor --fix (apply migrations)</option>
         <option value="openclaw.version">openclaw --version</option>
         <option value="openclaw.devices.list">openclaw devices list</option>
         <option value="openclaw.devices.approve">openclaw devices approve &lt;requestId&gt;</option>
@@ -915,6 +918,10 @@ app.get("/setup/api/debug", requireSetupAuth, async (_req, res) => {
       gatewayRunning: Boolean(gatewayProc),
       gatewayTokenFromEnv: Boolean(process.env.OPENCLAW_GATEWAY_TOKEN?.trim()),
       gatewayTokenPersisted: fs.existsSync(path.join(STATE_DIR, "gateway.token")),
+      // Booleans only (never values): verify subscription auth reaches the container
+      // and that no API key is set to override it.
+      claudeOauthTokenPresent: Boolean(process.env.CLAUDE_CODE_OAUTH_TOKEN?.trim()),
+      anthropicApiKeyPresent: Boolean(process.env.ANTHROPIC_API_KEY?.trim()),
       lastGatewayError,
       lastGatewayExit,
       lastDoctorAt,
@@ -979,8 +986,11 @@ const ALLOWED_CONSOLE_COMMANDS = new Set([
   "openclaw.status",
   "openclaw.health",
   "openclaw.doctor",
+  "openclaw.doctor.fix",
   "openclaw.logs.tail",
   "openclaw.config.get",
+  "openclaw.models.status",
+  "openclaw.models.auth.claude-cli",
 
   // Device management (for fixing "disconnected (1008): pairing required")
   "openclaw.devices.list",
@@ -1034,9 +1044,31 @@ app.post("/setup/api/console/run", requireSetupAuth, async (req, res) => {
       const r = await runCmd(OPENCLAW_NODE, clawArgs(["doctor"]));
       return res.status(r.code === 0 ? 200 : 500).json({ ok: r.code === 0, output: redactSecrets(r.output) });
     }
+    if (cmd === "openclaw.doctor.fix") {
+      // Doctor --fix can rewrite many session files; give it extra time.
+      const r = await runCmd(OPENCLAW_NODE, clawArgs(["doctor", "--fix"]), { timeoutMs: 300_000 });
+      return res.status(r.code === 0 ? 200 : 500).json({ ok: r.code === 0, output: redactSecrets(r.output) });
+    }
     if (cmd === "openclaw.logs.tail") {
       const lines = Math.max(50, Math.min(1000, Number.parseInt(arg || "200", 10) || 200));
-      const r = await runCmd(OPENCLAW_NODE, clawArgs(["logs", "--tail", String(lines)]));
+      let r = await runCmd(OPENCLAW_NODE, clawArgs(["logs", "--tail", String(lines)]));
+      if (r.code !== 0 && /does not recognize option "--tail"/.test(r.output || "")) {
+        // Newer OpenClaw builds take the line count positionally.
+        r = await runCmd(OPENCLAW_NODE, clawArgs(["logs", String(lines)]));
+      }
+      return res.status(r.code === 0 ? 200 : 500).json({ ok: r.code === 0, output: redactSecrets(r.output) });
+    }
+    if (cmd === "openclaw.models.status") {
+      const r = await runCmd(OPENCLAW_NODE, clawArgs(["models", "status"]));
+      return res.status(r.code === 0 ? 200 : 500).json({ ok: r.code === 0, output: redactSecrets(r.output) });
+    }
+    if (cmd === "openclaw.models.auth.claude-cli") {
+      // Registers the Claude CLI (subscription) auth profile for the default agent.
+      // Non-interactive only when CLAUDE_CODE_OAUTH_TOKEN (or an existing CLI login) is present.
+      const r = await runCmd(
+        OPENCLAW_NODE,
+        clawArgs(["models", "auth", "login", "--provider", "anthropic", "--method", "cli", "--set-default"]),
+      );
       return res.status(r.code === 0 ? 200 : 500).json({ ok: r.code === 0, output: redactSecrets(r.output) });
     }
     if (cmd === "openclaw.config.get") {
