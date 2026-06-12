@@ -343,6 +343,8 @@ app.get("/healthz", async (_req, res) => {
       configured: isConfigured(),
       stateDir: STATE_DIR,
       workspaceDir: WORKSPACE_DIR,
+      // Claude Code refuses --dangerously-skip-permissions as root; uid must be non-zero.
+      uid: typeof process.getuid === "function" ? process.getuid() : null,
     },
     gateway: {
       target: GATEWAY_TARGET,
