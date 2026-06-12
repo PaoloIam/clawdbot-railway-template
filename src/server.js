@@ -417,7 +417,7 @@ app.get("/setup", requireSetupAuth, (_req, res) => {
         <option value="openclaw.logs.tail">openclaw logs --tail N</option>
         <option value="openclaw.config.get">openclaw config get &lt;path&gt;</option>
         <option value="openclaw.models.status">openclaw models status (auth per provider)</option>
-        <option value="openclaw.models.auth.claude-cli">openclaw models auth login (Claude CLI / subscription)</option>
+        <option value="openclaw.models.auth.paste-token">openclaw models auth paste-token (Claude subscription)</option>
         <option value="openclaw.doctor.fix">openclaw doctor --fix (apply migrations)</option>
         <option value="openclaw.version">openclaw --version</option>
         <option value="openclaw.devices.list">openclaw devices list</option>
@@ -679,6 +679,16 @@ function runCmd(cmd, args, opts = {}) {
       },
     });
 
+    // Feed stdin for commands that read piped input (e.g. models auth paste-token).
+    if (typeof opts.stdinData === "string") {
+      try {
+        proc.stdin?.write(opts.stdinData);
+        proc.stdin?.end();
+      } catch {
+        // ignore
+      }
+    }
+
     let out = "";
     proc.stdout?.on("data", (d) => (out += d.toString("utf8")));
     proc.stderr?.on("data", (d) => (out += d.toString("utf8")));
@@ -706,6 +716,24 @@ function runCmd(cmd, args, opts = {}) {
       resolve({ code: code ?? 0, output: out });
     });
   });
+}
+
+async function syncClaudeSubscriptionToken(token) {
+  // `models auth paste-token` is OpenClaw's non-interactive auth path. It reads
+  // the token from stdin in automation mode; some builds take --token instead,
+  // so fall back if the piped form is rejected.
+  let r = await runCmd(
+    OPENCLAW_NODE,
+    clawArgs(["models", "auth", "paste-token", "--provider", "anthropic"]),
+    { stdinData: `${token}\n` },
+  );
+  if (r.code !== 0) {
+    r = await runCmd(
+      OPENCLAW_NODE,
+      clawArgs(["models", "auth", "paste-token", "--provider", "anthropic", "--token", token]),
+    );
+  }
+  return r;
 }
 
 app.post("/setup/api/run", requireSetupAuth, async (req, res) => {
@@ -990,7 +1018,7 @@ const ALLOWED_CONSOLE_COMMANDS = new Set([
   "openclaw.logs.tail",
   "openclaw.config.get",
   "openclaw.models.status",
-  "openclaw.models.auth.claude-cli",
+  "openclaw.models.auth.paste-token",
 
   // Device management (for fixing "disconnected (1008): pairing required")
   "openclaw.devices.list",
@@ -1062,13 +1090,17 @@ app.post("/setup/api/console/run", requireSetupAuth, async (req, res) => {
       const r = await runCmd(OPENCLAW_NODE, clawArgs(["models", "status"]));
       return res.status(r.code === 0 ? 200 : 500).json({ ok: r.code === 0, output: redactSecrets(r.output) });
     }
-    if (cmd === "openclaw.models.auth.claude-cli") {
-      // Registers the Claude CLI (subscription) auth profile for the default agent.
-      // Non-interactive only when CLAUDE_CODE_OAUTH_TOKEN (or an existing CLI login) is present.
-      const r = await runCmd(
-        OPENCLAW_NODE,
-        clawArgs(["models", "auth", "login", "--provider", "anthropic", "--method", "cli", "--set-default"]),
-      );
+    if (cmd === "openclaw.models.auth.paste-token") {
+      // Registers the Claude subscription token (from `claude setup-token`) in
+      // OpenClaw's credential store. Uses the arg if given, else the env var.
+      const token = (arg || process.env.CLAUDE_CODE_OAUTH_TOKEN || "").trim();
+      if (!token) {
+        return res.status(400).json({ ok: false, error: "No token: pass one as arg or set CLAUDE_CODE_OAUTH_TOKEN" });
+      }
+      if (!token.startsWith("sk-ant-")) {
+        return res.status(400).json({ ok: false, error: "Token should start with sk-ant- (generate it with `claude setup-token`)" });
+      }
+      const r = await syncClaudeSubscriptionToken(token);
       return res.status(r.code === 0 ? 200 : 500).json({ ok: r.code === 0, output: redactSecrets(r.output) });
     }
     if (cmd === "openclaw.config.get") {
@@ -1476,6 +1508,27 @@ const server = app.listen(PORT, "0.0.0.0", async () => {
       console.log("[wrapper] gateway tokens synced");
     } catch (err) {
       console.warn(`[wrapper] failed to sync gateway tokens: ${String(err)}`);
+    }
+  }
+
+  // Sync the Claude subscription token (from `claude setup-token`) into OpenClaw's
+  // credential store on every boot. OpenClaw spawns the Claude CLI with a sanitized
+  // environment, so the Railway env var alone never reaches the agent subprocess —
+  // the credential store is what the claude-cli backend actually injects.
+  const claudeSubToken = process.env.CLAUDE_CODE_OAUTH_TOKEN?.trim();
+  if (isConfigured() && claudeSubToken) {
+    console.log("[wrapper] syncing Claude subscription token into credential store...");
+    try {
+      const r = await syncClaudeSubscriptionToken(claudeSubToken);
+      if (r.code === 0) {
+        console.log("[wrapper] Claude subscription token synced");
+      } else {
+        console.warn(
+          `[wrapper] Claude token sync failed (exit=${r.code}):\n${redactSecrets(r.output || "").slice(0, 2000)}`,
+        );
+      }
+    } catch (err) {
+      console.warn(`[wrapper] Claude token sync failed (continuing): ${String(err)}`);
     }
   }
 
