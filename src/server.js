@@ -147,6 +147,41 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+// Resolve once a child process has exited (or immediately if it already has),
+// with a timeout so a wedged shutdown can't block the wrapper forever.
+function waitForProcExit(proc, { timeoutMs = 12_000 } = {}) {
+  return new Promise((resolve) => {
+    if (!proc || proc.exitCode !== null || proc.signalCode !== null) {
+      resolve(true);
+      return;
+    }
+    let settled = false;
+    const finish = (value) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(value);
+    };
+    const timer = setTimeout(() => finish(false), timeoutMs);
+    proc.once("exit", () => finish(true));
+  });
+}
+
+// The gateway binds a single internal port. A fresh spawn collides if a prior
+// gateway is still shutting down (graceful shutdown stops channels and can take
+// >10s). Poll until nothing is listening so we never hit "address in use" /
+// "gateway already running; lock timeout". In this container only our own child
+// binds this port, so "still in use" means an old instance hasn't released it.
+async function waitForPortFree({ timeoutMs = 15_000 } = {}) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const listening = await probeGateway();
+    if (!listening) return true;
+    await sleep(250);
+  }
+  return false;
+}
+
 async function waitForGatewayReady(opts = {}) {
   const timeoutMs = opts.timeoutMs ?? 20_000;
   const start = Date.now();
@@ -174,6 +209,13 @@ async function waitForGatewayReady(opts = {}) {
 async function startGateway() {
   if (gatewayProc) return;
   if (!isConfigured()) throw new Error("Gateway cannot start: not configured");
+
+  // Never spawn while a previous (dying) gateway still holds the internal port,
+  // or the new process fails with "address in use" / "gateway already running".
+  const portFree = await waitForPortFree({ timeoutMs: 15_000 });
+  if (!portFree) {
+    throw new Error("Gateway port still in use; previous gateway has not released it yet");
+  }
 
   fs.mkdirSync(STATE_DIR, { recursive: true });
   fs.mkdirSync(WORKSPACE_DIR, { recursive: true });
@@ -259,15 +301,28 @@ async function ensureGatewayRunning() {
 
 async function restartGateway() {
   if (gatewayProc) {
+    const proc = gatewayProc;
+    gatewayProc = null;
     try {
-      gatewayProc.kill("SIGTERM");
+      proc.kill("SIGTERM");
     } catch {
       // ignore
     }
-    // Give it a moment to exit and release the port.
-    await sleep(750);
-    gatewayProc = null;
+    // Graceful shutdown stops channels and can take >10s. Wait for the process
+    // to actually exit (escalating to SIGKILL) before respawning, so the new
+    // gateway doesn't collide on the internal port.
+    const exited = await waitForProcExit(proc, { timeoutMs: 12_000 });
+    if (!exited) {
+      try {
+        proc.kill("SIGKILL");
+      } catch {
+        // ignore
+      }
+      await waitForProcExit(proc, { timeoutMs: 3_000 });
+    }
   }
+  // Even after the process exits, the OS may hold the port briefly.
+  await waitForPortFree({ timeoutMs: 15_000 });
   return ensureGatewayRunning();
 }
 
