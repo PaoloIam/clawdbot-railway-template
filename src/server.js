@@ -1135,8 +1135,11 @@ app.post("/setup/api/console/run", requireSetupAuth, async (req, res) => {
     if (cmd === "openclaw.logs.tail") {
       const lines = Math.max(50, Math.min(1000, Number.parseInt(arg || "200", 10) || 200));
       let r = await runCmd(OPENCLAW_NODE, clawArgs(["logs", "--tail", String(lines)]));
-      if (r.code !== 0 && /does not recognize option "--tail"/.test(r.output || "")) {
-        // Newer OpenClaw builds take the line count positionally.
+      // The `logs` arg shape differs across OpenClaw builds: some accept
+      // `--tail N`, others want the count positionally (`logs N`) and reject the
+      // flag with "does not recognize option" OR "Too many arguments". Retry
+      // positionally on any of those arg-parsing failures.
+      if (r.code !== 0 && /does not recognize option|too many arguments|Try: openclaw logs/i.test(r.output || "")) {
         r = await runCmd(OPENCLAW_NODE, clawArgs(["logs", String(lines)]));
       }
       return res.status(r.code === 0 ? 200 : 500).json({ ok: r.code === 0, output: redactSecrets(r.output) });
