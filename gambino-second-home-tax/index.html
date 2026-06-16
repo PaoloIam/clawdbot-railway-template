@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Second Home Annual Tax — Facts &amp; Calculator | Gambino Group</title>
+  <meta name="description" content="Understand New York City's Second Home (pied-à-terre) Annual Tax. Use the Gambino Group calculator to estimate the annual surcharge on a non-primary NYC residence." />
+  <meta name="theme-color" content="#14110f" />
+
+  <!-- Open Graph / social preview -->
+  <meta property="og:title" content="Second Home Annual Tax — Facts & Calculator | Gambino Group" />
+  <meta property="og:description" content="Estimate the annual surcharge on a non-primary New York City residence with the Gambino Group Second Home Tax calculator." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- ====================== HEADER ====================== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Gambino Group home">
+        <span class="brand-mark">GG</span>
+        <span class="brand-text">
+          <span class="brand-name">GAMBINO GROUP</span>
+          <span class="brand-tag">New York City Real Estate</span>
+        </span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#facts">The Facts</a>
+        <a href="#calculator">Calculator</a>
+        <a href="#contact" class="nav-cta">Contact Paolo</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ====================== HERO ====================== -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <p class="eyebrow">New York City · Property Tax Insight</p>
+        <h1>The Second Home<br /><span class="accent">Annual Tax</span></h1>
+        <p class="hero-sub">
+          New York City has adopted an annual surcharge on high-value residences that are
+          <strong>not</strong> a primary home — often called the <em>pied-à-terre tax</em>.
+          Get the facts, then estimate what a property might owe each year.
+        </p>
+        <div class="hero-actions">
+          <a href="#calculator" class="btn btn-primary">Estimate the Annual Tax</a>
+          <a href="#facts" class="btn btn-ghost">Read the Facts</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== FACTS ====================== -->
+    <section id="facts" class="section">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow">The Facts</p>
+          <h2>What is the Second Home Annual Tax?</h2>
+          <p class="section-lede">
+            A recurring, yearly surcharge layered on top of existing NYC property taxes for
+            qualifying residential properties used as a second home rather than a primary residence.
+          </p>
+        </header>
+
+        <div class="fact-grid">
+          <article class="fact-card">
+            <span class="fact-icon" aria-hidden="true">$</span>
+            <h3>Who it affects</h3>
+            <p>Owners of NYC homes valued at <strong>$5 million or more</strong> that are not occupied as the owner's primary residence — typically buyers who live outside the five boroughs.</p>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon" aria-hidden="true">%</span>
+            <h3>How much</h3>
+            <p>A <strong>progressive surcharge</strong> on value above the threshold — starting around <strong>0.5%</strong> and scaling to roughly <strong>4%</strong> on the highest-value homes — charged <strong>every year</strong>.</p>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon" aria-hidden="true">🏠</span>
+            <h3>Key exemptions</h3>
+            <p>Properties used as the <strong>primary residence</strong> of the owner (or an immediate family member), and homes under a <strong>bona-fide long-term lease</strong> (1+ year) where the tenant lives there full-time.</p>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon" aria-hidden="true">↺</span>
+            <h3>It recurs</h3>
+            <p>Unlike the one-time <em>mansion tax</em> paid at closing, this is an <strong>annual</strong> obligation for as long as the property remains a qualifying second home.</p>
+          </article>
+        </div>
+
+        <div class="callout">
+          <strong>How it stacks up.</strong> The Second Home Annual Tax is in <em>addition</em> to your
+          ordinary NYC property tax bill and any transfer/mansion taxes paid at purchase. The estimate
+          below covers only the <em>annual second-home surcharge</em> — not your base property tax.
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== CALCULATOR ====================== -->
+    <section id="calculator" class="section section-alt">
+      <div class="container">
+        <header class="section-head">
+          <p class="eyebrow">Calculation Tool</p>
+          <h2>Estimate the Annual Second Home Tax</h2>
+          <p class="section-lede">
+            Enter a property's market value and how it's used. We'll estimate the yearly surcharge,
+            the effective rate, and a long-term projection.
+          </p>
+        </header>
+
+        <div class="calc-wrap">
+          <!-- Inputs -->
+          <form id="tax-form" class="calc-inputs" novalidate>
+            <div class="field">
+              <label for="market-value">Estimated market value</label>
+              <div class="input-money">
+                <span aria-hidden="true">$</span>
+                <input
+                  type="text"
+                  id="market-value"
+                  name="market-value"
+                  inputmode="numeric"
+                  autocomplete="off"
+                  placeholder="7,500,000"
+                  aria-describedby="mv-help" />
+              </div>
+              <p id="mv-help" class="field-help">The estimated fair market value of the residence.</p>
+            </div>
+
+            <fieldset class="field">
+              <legend>How is the property used?</legend>
+              <label class="radio">
+                <input type="radio" name="usage" value="second-home" checked />
+                <span>Second home / pied-à-terre (owner lives elsewhere)</span>
+              </label>
+              <label class="radio">
+                <input type="radio" name="usage" value="primary" />
+                <span>Primary residence of owner or immediate family</span>
+              </label>
+              <label class="radio">
+                <input type="radio" name="usage" value="rented" />
+                <span>Leased long-term (1+ yr) to a full-time tenant</span>
+              </label>
+            </fieldset>
+
+            <div class="field-row">
+              <button type="submit" class="btn btn-primary btn-block">Calculate</button>
+              <button type="reset" class="btn btn-ghost" id="reset-btn">Reset</button>
+            </div>
+            <p class="calc-note">Estimate only — see the disclaimer below.</p>
+          </form>
+
+          <!-- Results -->
+          <div class="calc-results" id="results" aria-live="polite">
+            <div class="result-empty" id="result-empty">
+              <p>Enter a value and select <strong>Calculate</strong> to see an estimate.</p>
+            </div>
+
+            <div class="result-body" id="result-body" hidden>
+              <div class="result-headline">
+                <p class="result-label">Estimated annual second home tax</p>
+                <p class="result-amount" id="annual-amount">$0</p>
+                <p class="result-sub" id="result-sub"></p>
+              </div>
+
+              <dl class="result-stats">
+                <div>
+                  <dt>Effective rate on value</dt>
+                  <dd id="effective-rate">0%</dd>
+                </div>
+                <div>
+                  <dt>Monthly equivalent</dt>
+                  <dd id="monthly-amount">$0</dd>
+                </div>
+                <div>
+                  <dt>Projected 10-year total</dt>
+                  <dd id="tenyear-amount">$0</dd>
+                </div>
+              </dl>
+
+              <div class="bracket-breakdown" id="bracket-breakdown">
+                <h4>How the estimate is built</h4>
+                <table class="bracket-table">
+                  <thead>
+                    <tr><th>Value tier</th><th>Rate</th><th>Tax in tier</th></tr>
+                  </thead>
+                  <tbody id="bracket-rows"></tbody>
+                </table>
+              </div>
+
+              <div class="result-cta">
+                <p>Questions about how this affects a specific property or sale?</p>
+                <a href="#contact" class="btn btn-primary">Talk to Paolo at Gambino Group</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="disclaimer">
+          <strong>Disclaimer:</strong> This calculator provides a general, good-faith estimate for
+          informational purposes only and is based on publicly reported tax tiers, which are subject to
+          change and to final regulations. It is <strong>not</strong> tax, legal, or accounting advice,
+          does not reflect every exemption, abatement, or property-specific factor, and does not create a
+          client relationship. Confirm any figures with the New York City Department of Finance and a
+          qualified tax professional before relying on them.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====================== CONTACT ====================== -->
+    <section id="contact" class="section section-dark">
+      <div class="container contact-inner">
+        <div class="contact-copy">
+          <p class="eyebrow">Let's Talk</p>
+          <h2>Buying or selling a New York City home?</h2>
+          <p>
+            Whether the Second Home Annual Tax changes your strategy or you simply want a trusted guide
+            through the NYC market, I'm here to help — with discretion and local expertise.
+          </p>
+        </div>
+        <div class="contact-card">
+          <p class="agent-name" data-contact="name">Paolo Sciarra</p>
+          <p class="agent-title" data-contact="title">Licensed Real Estate Salesperson · Gambino Group</p>
+          <ul class="agent-contacts">
+            <li>
+              <span class="ac-label">Phone</span>
+              <a data-contact="phone-link" href="tel:+10000000000"><span data-contact="phone">(000) 000-0000</span></a>
+            </li>
+            <li>
+              <span class="ac-label">Email</span>
+              <a data-contact="email-link" href="mailto:paolo.sciarra@gmail.com"><span data-contact="email">paolo.sciarra@gmail.com</span></a>
+            </li>
+            <li>
+              <span class="ac-label">Web</span>
+              <a data-contact="web-link" href="#" target="_blank" rel="noopener"><span data-contact="web">gambinogroup.com</span></a>
+            </li>
+            <li>
+              <span class="ac-label">Office</span>
+              <span data-contact="address">New York, NY</span>
+            </li>
+          </ul>
+          <a data-contact="email-cta" href="mailto:paolo.sciarra@gmail.com" class="btn btn-primary btn-block">Email Paolo</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====================== FOOTER ====================== -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-brand">GAMBINO GROUP</p>
+      <p class="footer-fine">
+        © <span id="year">2026</span> Gambino Group. Information presented is for general educational
+        purposes and is not a substitute for professional tax or legal advice. Equal Housing Opportunity.
+      </p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
