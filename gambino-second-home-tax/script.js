@@ -10,12 +10,12 @@ const CONFIG = {
   contact: {
     name: "Paolo Sciarra",
     title: "Licensed Real Estate Salesperson · Gambino Group",
-    phone: "(000) 000-0000",          // TODO: replace with your real number
-    phoneLink: "+10000000000",        // TODO: digits only, with country code
+    phone: "(917) 963-4957",
+    phoneLink: "+19179634957",
     email: "paolo.sciarra@gmail.com",
-    web: "gambinogroup.com",          // TODO: confirm / replace
-    webLink: "https://gambinogroup.com", // TODO: confirm / replace
-    address: "New York, NY",          // TODO: replace with office address
+    web: "gambinogroup.com",
+    webLink: "https://gambinogroup.com",
+    address: "New York, NY",          // TODO: add a street office address if you want one shown
   },
 
   /* ---- Tax rules (edit to match the official, enacted figures) ----
