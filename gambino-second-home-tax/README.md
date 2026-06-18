@@ -4,20 +4,19 @@ A single-page, branded reproduction of a "Second Home Annual Tax" facts + calcul
 tool for **Gambino Group**. It explains New York City's annual second-home
 (pied-à-terre) surcharge and lets a visitor estimate the yearly amount for a property.
 
-Static site — **no build step, no dependencies**. Just HTML, CSS, and vanilla JS.
+Static site — **no build step, no dependencies**. Everything (HTML, CSS, and the
+calculator's vanilla JS) lives in a **single self-contained `index.html`**.
 
 ```
 gambino-second-home-tax/
-├─ index.html      # page content + layout
-├─ styles.css      # Gambino Group branding (charcoal + gold)
-├─ script.js       # calculator logic + CONFIG (contact info & tax tiers)
+├─ index.html      # the entire site: layout + styles + calculator
 ├─ netlify.toml    # deploy + headers config
 └─ README.md
 ```
 
 ## ✏️ Edit your details (one place)
 
-Open **`script.js`** and edit the `CONFIG` object at the top:
+Open **`index.html`** and edit the `CONFIG` object inside the `<script>` block near the bottom:
 
 - `CONFIG.contact` — name, title, **phone**, email, **website**, **office address**.
   Items marked `// TODO` are placeholders you should replace before publishing
@@ -27,14 +26,18 @@ Open **`script.js`** and edit the `CONFIG` object at the top:
   publicly reported pied-à-terre tiers and are easy to swap (one array).
 
 Want your real logo instead of the "GG" wordmark? Replace the `.brand-mark` / `.brand-text`
-block in `index.html` with an `<img src="logo.svg" ...>` and drop the file in this folder.
+block in `index.html` with an `<img src="logo.svg" ...>` and drop the file in this folder
+(at that point you'd be deploying a folder rather than the single file — see below).
 
 ## 🚀 Deploy to Netlify
 
 ### Option A — Drag & drop (fastest)
 1. Go to <https://app.netlify.com/drop>
-2. Drag this **`gambino-second-home-tax`** folder onto the page.
+2. Drag the **`index.html`** file (or this whole **`gambino-second-home-tax`** folder) onto the page.
 3. Done — Netlify gives you a live URL. Rename the site in **Site settings** if you like.
+
+> Because the site is one self-contained file, you can even email/AirDrop `index.html`
+> and open it directly in a browser to preview it — no server needed.
 
 ### Option B — Connect the Git repo (auto-deploy on push)
 1. In Netlify: **Add new site → Import an existing project** and pick this repo.

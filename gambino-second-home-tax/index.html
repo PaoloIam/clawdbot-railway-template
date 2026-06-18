@@ -16,7 +16,326 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+  /* ============================================================
+     Gambino Group — Second Home Annual Tax
+     Luxury real-estate palette: charcoal + warm gold + ivory
+     ============================================================ */
+
+  :root {
+    --ink: #14110f;
+    --ink-soft: #2c2722;
+    --gold: #b8965a;
+    --gold-bright: #cda968;
+    --ivory: #f7f3ec;
+    --ivory-2: #efe8dc;
+    --paper: #ffffff;
+    --muted: #6b635a;
+    --line: #e3dccf;
+    --good: #2f7d5b;
+    --shadow: 0 18px 50px rgba(20, 17, 15, 0.12);
+    --radius: 14px;
+    --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--ivory);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    width: min(1120px, 92vw);
+    margin: 0 auto;
+  }
+
+  h1, h2, h3, h4 { font-family: var(--serif); font-weight: 600; line-height: 1.1; margin: 0; }
+
+  a { color: inherit; }
+
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin: 0 0 0.6rem;
+  }
+
+  .accent { color: var(--gold); }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    font-family: var(--sans);
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--gold); color: #fff; box-shadow: 0 10px 24px rgba(184, 150, 90, 0.35); }
+  .btn-primary:hover { background: var(--gold-bright); }
+  .btn-ghost { background: transparent; border-color: currentColor; color: var(--ink); }
+  .btn-ghost:hover { background: rgba(20,17,15,0.05); }
+  .btn-block { width: 100%; }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(247, 243, 236, 0.88);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .header-inner { display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 0; }
+  .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+  .brand-mark {
+    display: grid; place-items: center;
+    width: 44px; height: 44px;
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.04em;
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+  .brand-name { font-weight: 700; letter-spacing: 0.18em; font-size: 0.95rem; }
+  .brand-tag { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.16em; text-transform: uppercase; }
+  .site-nav { display: flex; align-items: center; gap: 1.6rem; }
+  .site-nav a { text-decoration: none; font-weight: 500; font-size: 0.92rem; color: var(--ink-soft); }
+  .site-nav a:hover { color: var(--gold); }
+  .nav-cta {
+    border: 1.5px solid var(--gold);
+    color: var(--gold) !important;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+  }
+  .nav-cta:hover { background: var(--gold); color: #fff !important; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    background:
+      radial-gradient(1200px 500px at 80% -10%, rgba(184,150,90,0.18), transparent 60%),
+      linear-gradient(180deg, var(--ink) 0%, var(--ink-soft) 100%);
+    color: var(--ivory);
+    overflow: hidden;
+  }
+  .hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(700px 400px at 70% 0%, #000, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { position: relative; padding: 5.5rem 0 5rem; max-width: 760px; }
+  .hero .eyebrow { color: var(--gold-bright); }
+  .hero h1 { font-size: clamp(2.8rem, 7vw, 5rem); }
+  .hero-sub { font-size: 1.18rem; color: rgba(247,243,236,0.85); margin: 1.4rem 0 2rem; max-width: 620px; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+  .hero .btn-ghost { color: var(--ivory); }
+  .hero .btn-ghost:hover { background: rgba(255,255,255,0.08); }
+
+  /* ---------- Sections ---------- */
+  .section { padding: 5rem 0; }
+  .section-alt { background: var(--ivory-2); }
+  .section-head { max-width: 680px; margin: 0 auto 3rem; text-align: center; }
+  .section-head h2 { font-size: clamp(2rem, 4vw, 3rem); }
+  .section-lede { color: var(--muted); font-size: 1.1rem; margin-top: 0.8rem; }
+
+  /* ---------- Fact cards ---------- */
+  .fact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.4rem;
+  }
+  .fact-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.8rem;
+    box-shadow: 0 6px 18px rgba(20,17,15,0.04);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .fact-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .fact-icon {
+    display: grid; place-items: center;
+    width: 46px; height: 46px;
+    border-radius: 12px;
+    background: var(--ivory-2);
+    color: var(--gold);
+    font-family: var(--serif);
+    font-size: 1.4rem; font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .fact-card h3 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+  .fact-card p { margin: 0; color: var(--ink-soft); font-size: 0.98rem; }
+
+  .callout {
+    margin-top: 2.5rem;
+    padding: 1.4rem 1.6rem;
+    border-left: 4px solid var(--gold);
+    background: var(--paper);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    color: var(--ink-soft);
+    box-shadow: 0 6px 18px rgba(20,17,15,0.04);
+  }
+
+  /* ---------- Calculator ---------- */
+  .calc-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1.05fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .calc-inputs, .calc-results {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+  }
+  .field { margin-bottom: 1.6rem; border: 0; padding: 0; }
+  .field > label, .field legend { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+  .field legend { margin-bottom: 0.8rem; }
+  .input-money {
+    display: flex; align-items: center;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 0 0.9rem;
+    background: var(--ivory);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .input-money:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,150,90,0.18); }
+  .input-money span { color: var(--muted); font-weight: 600; }
+  .input-money input {
+    border: 0; background: transparent; outline: none;
+    font-size: 1.35rem; font-weight: 600;
+    padding: 0.8rem 0.5rem; width: 100%;
+    font-family: var(--sans); color: var(--ink);
+  }
+  .field-help { font-size: 0.82rem; color: var(--muted); margin: 0.4rem 0 0; }
+  .radio {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    padding: 0.7rem 0.9rem; margin-bottom: 0.5rem;
+    border: 1.5px solid var(--line); border-radius: 10px;
+    cursor: pointer; font-size: 0.95rem;
+    transition: border-color 0.18s ease, background 0.18s ease;
+  }
+  .radio:hover { border-color: var(--gold); }
+  .radio input { margin-top: 0.25rem; accent-color: var(--gold); }
+  .radio input:checked ~ span { font-weight: 500; }
+  .radio:has(input:checked) { border-color: var(--gold); background: rgba(184,150,90,0.07); }
+  .field-row { display: flex; gap: 0.8rem; }
+  .field-row .btn-block { flex: 1; }
+  .calc-note { font-size: 0.8rem; color: var(--muted); text-align: center; margin: 1rem 0 0; }
+
+  /* Results */
+  .result-empty { color: var(--muted); text-align: center; padding: 3rem 1rem; }
+  .result-headline { text-align: center; padding-bottom: 1.4rem; border-bottom: 1px solid var(--line); }
+  .result-label { text-transform: uppercase; letter-spacing: 0.16em; font-size: 0.74rem; color: var(--muted); margin: 0; }
+  .result-amount { font-family: var(--serif); font-size: clamp(2.6rem, 6vw, 3.6rem); font-weight: 700; color: var(--ink); margin: 0.3rem 0; }
+  .result-sub { margin: 0; color: var(--good); font-weight: 600; font-size: 0.95rem; }
+  .result-sub.exempt { color: var(--good); }
+  .result-sub.taxed { color: var(--gold); }
+  .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.4rem 0; }
+  .result-stats div { text-align: center; padding: 0.6rem; background: var(--ivory); border-radius: 10px; }
+  .result-stats dt { font-size: 0.74rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .result-stats dd { margin: 0.3rem 0 0; font-weight: 700; font-size: 1.15rem; }
+
+  .bracket-breakdown h4 { font-size: 1.2rem; margin-bottom: 0.6rem; }
+  .bracket-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .bracket-table th, .bracket-table td { text-align: left; padding: 0.55rem 0.4rem; border-bottom: 1px solid var(--line); }
+  .bracket-table th { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  .bracket-table td:last-child, .bracket-table th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .bracket-table td:nth-child(2) { color: var(--gold); font-weight: 600; }
+  .bracket-table tr.inactive td { color: var(--muted); opacity: 0.6; }
+
+  .result-cta { margin-top: 1.6rem; text-align: center; }
+  .result-cta p { margin: 0 0 0.8rem; color: var(--ink-soft); }
+
+  .disclaimer {
+    margin: 2.5rem auto 0;
+    max-width: 820px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  /* ---------- Contact ---------- */
+  .section-dark { background: var(--ink); color: var(--ivory); }
+  .contact-inner { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3rem; align-items: center; }
+  .contact-copy h2 { font-size: clamp(2rem, 4vw, 3rem); }
+  .contact-copy p { color: rgba(247,243,236,0.8); font-size: 1.08rem; }
+  .contact-copy .eyebrow { color: var(--gold-bright); }
+  .contact-card {
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+  }
+  .agent-name { font-family: var(--serif); font-size: 1.9rem; font-weight: 700; margin: 0; }
+  .agent-title { color: var(--muted); margin: 0.2rem 0 1.4rem; font-size: 0.95rem; }
+  .agent-contacts { list-style: none; margin: 0 0 1.6rem; padding: 0; }
+  .agent-contacts li {
+    display: flex; align-items: baseline; gap: 1rem;
+    padding: 0.7rem 0; border-bottom: 1px solid var(--line);
+  }
+  .agent-contacts a { color: var(--ink); text-decoration: none; font-weight: 600; }
+  .agent-contacts a:hover { color: var(--gold); }
+  .ac-label {
+    flex: 0 0 70px;
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+
+  /* ---------- Footer ---------- */
+  .site-footer { background: #0e0c0a; color: rgba(247,243,236,0.7); padding: 2.5rem 0; }
+  .footer-inner { text-align: center; }
+  .footer-brand { font-family: var(--serif); letter-spacing: 0.2em; font-weight: 700; color: var(--gold); margin: 0 0 0.6rem; }
+  .footer-fine { font-size: 0.8rem; max-width: 720px; margin: 0 auto; line-height: 1.6; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 860px) {
+    .calc-wrap { grid-template-columns: 1fr; }
+    .contact-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .site-nav { gap: 1rem; }
+    .site-nav a:not(.nav-cta) { display: none; }
+  }
+  @media (max-width: 520px) {
+    .result-stats { grid-template-columns: 1fr; }
+    .field-row { flex-direction: column; }
+    .hero-inner { padding: 4rem 0 3.5rem; }
+  }
+
+  /* Accessibility */
+  :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto !important; transition: none !important; }
+  }
+  </style>
 </head>
 <body>
   <!-- ====================== HEADER ====================== -->
@@ -258,6 +577,190 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+  /* ============================================================
+     Gambino Group — Second Home Annual Tax calculator
+     ------------------------------------------------------------
+     EDIT EVERYTHING YOU NEED IN THE `CONFIG` OBJECT BELOW.
+     No build step. Plain browser JavaScript.
+     ============================================================ */
+
+  const CONFIG = {
+    /* ---- Your contact info (edit these) ---- */
+    contact: {
+      name: "Paolo Sciarra",
+      title: "Licensed Real Estate Salesperson · Gambino Group",
+      phone: "(917) 963-4957",
+      phoneLink: "+19179634957",
+      email: "paolo.sciarra@gmail.com",
+      web: "gambinogroup.com",
+      webLink: "https://gambinogroup.com",
+      address: "New York, NY",          // TODO: add a street office address if you want one shown
+    },
+
+    /* ---- Tax rules (edit to match the official, enacted figures) ----
+       `threshold`  : value below which no second-home surcharge applies.
+       `brackets`   : MARGINAL tiers. Each tier's rate applies only to the
+                      portion of value that falls within [from, to).
+       Figures below reflect publicly reported pied-à-terre tiers and should
+       be verified against the NYC Department of Finance before publishing. */
+    threshold: 5_000_000,
+    brackets: [
+      { from: 5_000_000,  to: 6_000_000,  rate: 0.005 },  // 0.5%
+      { from: 6_000_000,  to: 10_000_000, rate: 0.010 },  // 1.0%
+      { from: 10_000_000, to: 15_000_000, rate: 0.020 },  // 2.0%
+      { from: 15_000_000, to: 20_000_000, rate: 0.030 },  // 3.0%
+      { from: 20_000_000, to: 25_000_000, rate: 0.035 },  // 3.5%
+      { from: 25_000_000, to: Infinity,   rate: 0.040 },  // 4.0%
+    ],
+    projectionYears: 10,
+  };
+
+  /* ---------------- Formatting helpers ---------------- */
+  const fmtMoney = (n) =>
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(Math.round(n));
+
+  const fmtMoneyCents = (n) =>
+    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(n);
+
+  const fmtPct = (r) => `${(r * 100).toFixed(2).replace(/\.00$/, "")}%`;
+
+  const fmtTier = (from, to) =>
+    to === Infinity ? `${fmtMoney(from)}+` : `${fmtMoney(from)} – ${fmtMoney(to)}`;
+
+  /* ---------------- Core calculation ----------------
+     Returns the annual surcharge plus a per-bracket breakdown. */
+  function calculateTax(value) {
+    let total = 0;
+    const detail = CONFIG.brackets.map((b) => {
+      const taxable = Math.max(0, Math.min(value, b.to) - b.from);
+      const tax = taxable * b.rate;
+      total += tax;
+      return { ...b, taxable, tax, active: taxable > 0 };
+    });
+    const effectiveRate = value > 0 ? total / value : 0;
+    return { total, detail, effectiveRate };
+  }
+
+  /* ---------------- Money input masking ---------------- */
+  const valueInput = document.getElementById("market-value");
+
+  function digitsToNumber(str) {
+    const d = String(str).replace(/[^0-9]/g, "");
+    return d ? parseInt(d, 10) : 0;
+  }
+
+  valueInput.addEventListener("input", (e) => {
+    const caretFromEnd = e.target.value.length - e.target.selectionStart;
+    const num = digitsToNumber(e.target.value);
+    e.target.value = num ? num.toLocaleString("en-US") : "";
+    const newPos = e.target.value.length - caretFromEnd;
+    e.target.setSelectionRange(Math.max(0, newPos), Math.max(0, newPos));
+  });
+
+  /* ---------------- Render results ---------------- */
+  const els = {
+    form: document.getElementById("tax-form"),
+    empty: document.getElementById("result-empty"),
+    body: document.getElementById("result-body"),
+    annual: document.getElementById("annual-amount"),
+    sub: document.getElementById("result-sub"),
+    effective: document.getElementById("effective-rate"),
+    monthly: document.getElementById("monthly-amount"),
+    tenyear: document.getElementById("tenyear-amount"),
+    rows: document.getElementById("bracket-rows"),
+    breakdown: document.getElementById("bracket-breakdown"),
+    resetBtn: document.getElementById("reset-btn"),
+  };
+
+  function showExempt(reason) {
+    els.empty.hidden = true;
+    els.body.hidden = false;
+    els.annual.textContent = fmtMoney(0);
+    els.sub.textContent = reason;
+    els.sub.className = "result-sub exempt";
+    els.effective.textContent = "0%";
+    els.monthly.textContent = fmtMoney(0);
+    els.tenyear.textContent = fmtMoney(0);
+    els.breakdown.style.display = "none";
+  }
+
+  function render(value, usage) {
+    // Exemptions
+    if (usage === "primary") {
+      return showExempt("Exempt — owner/family primary residence.");
+    }
+    if (usage === "rented") {
+      return showExempt("Exempt — bona-fide long-term lease to a full-time tenant.");
+    }
+    if (value < CONFIG.threshold) {
+      return showExempt(`Below the ${fmtMoney(CONFIG.threshold)} threshold — no second-home surcharge.`);
+    }
+
+    const { total, detail, effectiveRate } = calculateTax(value);
+
+    els.empty.hidden = true;
+    els.body.hidden = false;
+    els.breakdown.style.display = "";
+
+    els.annual.textContent = fmtMoney(total);
+    els.sub.textContent = `Estimated annual surcharge on a ${fmtMoney(value)} second home`;
+    els.sub.className = "result-sub taxed";
+    els.effective.textContent = fmtPct(effectiveRate);
+    els.monthly.textContent = fmtMoney(total / 12);
+    els.tenyear.textContent = fmtMoney(total * CONFIG.projectionYears);
+
+    els.rows.innerHTML = detail
+      .map(
+        (b) => `
+        <tr class="${b.active ? "" : "inactive"}">
+          <td>${fmtTier(b.from, b.to)}</td>
+          <td>${fmtPct(b.rate)}</td>
+          <td>${b.active ? fmtMoneyCents(b.tax) : "—"}</td>
+        </tr>`
+      )
+      .join("");
+  }
+
+  /* ---------------- Events ---------------- */
+  els.form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const value = digitsToNumber(valueInput.value);
+    const usage = els.form.querySelector('input[name="usage"]:checked')?.value || "second-home";
+    render(value, usage);
+    els.body.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+
+  els.resetBtn.addEventListener("click", () => {
+    setTimeout(() => {
+      els.body.hidden = true;
+      els.empty.hidden = false;
+    }, 0);
+  });
+
+  /* ---------------- Inject contact info into the page ---------------- */
+  function applyContact() {
+    const c = CONFIG.contact;
+    const set = (key, text) =>
+      document.querySelectorAll(`[data-contact="${key}"]`).forEach((el) => (el.textContent = text));
+    const setHref = (key, href) =>
+      document.querySelectorAll(`[data-contact="${key}"]`).forEach((el) => el.setAttribute("href", href));
+
+    set("name", c.name);
+    set("title", c.title);
+    set("phone", c.phone);
+    set("email", c.email);
+    set("web", c.web);
+    set("address", c.address);
+
+    setHref("phone-link", `tel:${c.phoneLink}`);
+    setHref("email-link", `mailto:${c.email}`);
+    setHref("email-cta", `mailto:${c.email}?subject=${encodeURIComponent("Second Home Tax — NYC Real Estate")}`);
+    setHref("web-link", c.webLink);
+  }
+
+  applyContact();
+  document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
